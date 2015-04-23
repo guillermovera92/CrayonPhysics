@@ -1,0 +1,87 @@
+#version 330
+// Fragment shader
+
+// Textures
+uniform sampler2D diffuseRamp;
+uniform sampler2D specularRamp;
+uniform sampler2D noiseTex;
+uniform sampler2D paperTex;
+
+// Material Properties
+uniform vec3 ambientReflectionCoeff;
+uniform vec3 diffuseReflectionCoeff;
+uniform vec3 specularReflectionCoeff;
+uniform float specularExponent;
+
+// Light Properties
+uniform vec3 ambientLightIntensity;
+uniform vec3 diffuseLightIntensity;
+uniform vec3 specularLightIntensity;
+uniform vec4 lightPosition;
+
+uniform vec3 eyePosition;
+
+// These get passed in from the vertex shader and are interpolated (in) properties
+// change for each pixel across the triangle:
+in vec4 interpSurfPosition;
+in vec3 interpSurfNormal;
+
+in vec3 vertexColor;
+
+out vec4 fragColor;
+
+void main() {
+	// interpNormal is linearly interpolated across the surface, but it
+	// is *NOT* guaranteed to be of unit length, which can cause
+	// unappealing lighting artifacts.  This normalizes the vector to be
+	// of unit length.
+	vec3 N = normalize(interpSurfNormal);
+
+	vec3 L = normalize(lightPosition - interpSurfPosition).xyz;
+
+
+    // Start with black and then add lighting to the final color as we calculate it
+	vec3 finalColor = vec3(0.0, 0.0, 0.0);
+
+
+	// AMBIENT:
+	finalColor += ambientLightIntensity * ambientReflectionCoeff;
+
+
+	// DIFFUSE:
+	float NdotL = clamp(dot(N,L), 0.0, 1.0);
+  
+  	if (NdotL > 0.0) {
+   		vec4 coloredLambertianIntensity = texture(diffuseRamp, vec2(NdotL, 0.0));
+  
+		finalColor += diffuseLightIntensity * diffuseReflectionCoeff * coloredLambertianIntensity.rgb * vertexColor;
+	}
+
+
+	// SPECULAR:
+	if (NdotL > 0.0) {
+		// Reflected light direction: https://www.opengl.org/sdk/docs/man4/html/reflect.xhtml
+		vec3 R = -normalize(reflect(L,N));
+		// Direction to the viewer -- since we are transformed into eye space, the viewer is at (0,0,0).
+		vec3 V = normalize(eyePosition - interpSurfPosition.xyz);
+
+		float RdotV = max(0.0, dot(R,V));
+
+		float specIntensity = clamp(pow(RdotV, specularExponent), 0.0, 1.0);
+  
+    	vec4 coloredSpecIntensity = texture(specularRamp, vec2(specIntensity, 0.0));
+
+		finalColor += specularLightIntensity * specularReflectionCoeff * coloredSpecIntensity.rgb;
+	}
+
+
+  vec3 backgroundColor = texture(paperTex, gl_FragCoord.xy/128.0).xyz;
+  
+  float intensity = 1.0 - clamp((finalColor.r + finalColor.g + finalColor.b)/3.0, 0.0, 1.0);
+  intensity = intensity + texture(noiseTex, gl_FragCoord.xy/128.0).r;
+  intensity = intensity * 5.0 - 4.0;
+  intensity = clamp(intensity, 0.0, 1.0);
+  
+  fragColor.rgb = mix(backgroundColor, finalColor, intensity);
+  fragColor.a = 1.0;
+}

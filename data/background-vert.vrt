@@ -1,0 +1,8 @@
+#version 330
+// Vertex shader
+in vec4 g3d_Vertex;
+
+void main(void)
+{
+  gl_Position = g3d_ObjectToScreenMatrix * g3d_Vertex;
+}

@@ -1,0 +1,14 @@
+#version 330
+// Fragment shader
+
+uniform sampler2D paperTex;
+
+out vec4 fragColor;
+
+void main() {
+  vec3 backgroundColor = texture(paperTex, gl_FragCoord.xy/128.0).xyz;
+  
+  fragColor.rgb = backgroundColor;
+  fragColor.a = 1.0;
+  
+}

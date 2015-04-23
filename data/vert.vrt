@@ -1,0 +1,43 @@
+#version 330
+// Vertex shader
+in vec4 g3d_Vertex;
+in vec3 g3d_Normal;
+in vec3 color;
+
+// OUTPUT: to the fragment shader
+
+// Position of the current point on the surface, interpolated across the surface.
+out vec4 interpSurfPosition;
+
+// Normal of the current point on the surface, interpolated across the surface.
+out vec3 interpSurfNormal;
+
+out vec3 vertexColor;
+
+void main(void)
+{
+	// g3d_Vertex is a variable that holds the 3D position of the current vertex.  We want to
+	// pass this position on to the fragment shader because we'll need it to calculate the lighting.  
+	// We're also going to do one matrix multiplication at this stage.  g3d_ObjectToWorldMatrix is another
+	// variable that is roughly equivalent to the top matrix on the opengl matrix stack; this 
+	// is where G3D stores the current RenderDevice::objectToWorldMatrix(). G3D sets the variable automatically
+	// when your shader program is compiled.
+	interpSurfPosition = vec4(g3d_ObjectToWorldMatrix * g3d_Vertex, 1.0);
+
+	// We also need the normal to calculate lighting.  So, we will similarly pass it on to the fragment
+	// program as an "out" variable, and we'll do the same type of matrix multiplication.  However,
+	// it turns out you have to use a slightly different matrix for normals because they transform a 
+	// bit differently than points.  So, we use the g3d_ObjectToWorldNormalMatrix, but you can think of it as the
+	// just a special version of the g3d_ObjectToWorldMatrix that is used just for normals.
+	interpSurfNormal = g3d_ObjectToWorldNormalMatrix * g3d_Normal;
+
+
+	// This is the last line of almost every vertex shader program.  We don't need this for our lighting
+	// calculations, but it is required by OpenGl.  Whereas a fragment program must output a color
+	// as its final result, a vertex program must output a vertex position that has been projected into the
+	// 2D screen space as its final result.  The line below does this.  This is exactly what OpenGL
+	// would do by default for us if we didn't write our own custom vertex program.
+	gl_Position = g3d_ObjectToScreenMatrix * g3d_Vertex;
+
+	vertexColor = color;
+}

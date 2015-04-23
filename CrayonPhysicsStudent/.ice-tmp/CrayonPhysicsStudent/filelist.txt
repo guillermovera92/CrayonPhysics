@@ -1,0 +1,4 @@
+.ice-tmp/CrayonPhysicsStudent/osx-x86_64-clang++6.1/DEBUG/App.o
+.ice-tmp/CrayonPhysicsStudent/osx-x86_64-clang++6.1/DEBUG/main.o
+.ice-tmp/CrayonPhysicsStudent/osx-x86_64-clang++6.1/DEBUG/PolylineRenderer.o
+.ice-tmp/CrayonPhysicsStudent/osx-x86_64-clang++6.1/DEBUG/TurntableManipulator.o
