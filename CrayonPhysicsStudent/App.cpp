@@ -1,5 +1,6 @@
 #include "App.h"
 #include "config.h"
+#include <Box2D/Box2D.h>
 
 App::App(const GApp::Settings& settings) : GApp(settings) {
 	renderDevice->setColorClearValue(Color3(0.2, 0.2, 0.2));
@@ -15,6 +16,9 @@ void App::onInit() {
 	developerWindow->cameraControlWindow->setVisible(false);
 	showRenderingStats = false;
 
+    //create Box2D world, setting gravity vector
+	world = new b2World(b2Vec2(0, -9.8));
+    
 
 	// This load shaders from disk, we do it once when the program starts up, but
 	// since you don't need to recompile to reload shaders, you can even do this
@@ -135,8 +139,9 @@ void App::onUserInput(UserInput *userInput) {
 				float rad = (maxP - minP).length() / 2.0;
 				if (rad < 100) {
 					// TODO: add this sphere to the physics simulation
-					spheres.append(Sphere(center, rad));
-				}
+					//spheres.append(Sphere(center, rad));
+                    addCircle(center, rad);
+                }
 			}
 			else if (sketchMode == SKETCHING_BOXES) {
 				float rad = (maxP - minP).length() / 2.0;
@@ -168,9 +173,38 @@ void App::onUserInput(UserInput *userInput) {
 	}
 }
 
+void App::addCircle(Vector3 position, float radius) {
+    SimCircle simCircle;
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(position.x, position.y);
+    simCircle.body = world->CreateBody(&bodyDef);
+    simCircle.radius = radius;
+    
+    b2CircleShape circle;
+    circle.m_radius = radius;
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &circle;
+    fixtureDef.density = .2f;
+    fixtureDef.friction = .3f;
+    fixtureDef.restitution = 1.0f;
+    simCircle.body->CreateFixture(&fixtureDef);
+    
+    //simCircle.color = Color3(random.uniform(),random.uniform(),random.uniform());
+    
+    circles.append(simCircle);
+}
+
+
+void App::resetWorld() {
+    delete world;
+    world = new b2World(b2Vec2(0, -9.8));
+    circles = Array<SimCircle>();
+}
 
 void App::onSimulation(RealTime rdt, SimTime sdt, SimTime idt) {
 	GApp::onSimulation(rdt, sdt, idt);
+    world->Step(1/60.0, 6, 2);
 }
 
 
@@ -227,10 +261,25 @@ void App::onGraphics3D(RenderDevice* rd, Array<shared_ptr<Surface> >& surface3D)
 
 	// TODO: you should change this to draw physics objects instead of stationary objects  
 	
-	for (int i=0;i<spheres.size();i++) {
-		createGeometryAndSetArgs(spheres[i], Color3(0.20,0.79,0.20), args);
-		rd->apply(shader, args);
-	}
+//	for (int i=0;i<spheres.size();i++) {
+//		createGeometryAndSetArgs(spheres[i], Color3(0.20,0.79,0.20), args);
+//		rd->apply(shader, args);
+//	}
+    
+    // render circles
+    for (int x=0; x<circles.size(); x++) {
+        
+        b2Vec2 pos2 = circles[x].body->GetPosition();
+        float radius = circles[x].radius;
+        Vector3 pos3(pos2.x, pos2.y, 0);
+        // Sphere sphere = Sphere(pos3, radius, );
+        // Draw::sphere(Sphere(pos3, circles[x].radius), rd);
+
+        createGeometryAndSetArgs(Sphere(pos3, radius), Color3(0.20,0.79,0.20), args);
+        rd->apply(shader, args);
+    
+    }
+ 
 	for (int i=0;i<boxes.size();i++) {
 		createGeometryAndSetArgs(boxes[i], Color3(0.44,0.52,0.93), args);
 		rd->apply(shader, args);

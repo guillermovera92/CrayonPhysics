@@ -4,6 +4,18 @@
 #include <G3D/G3DAll.h>
 #include "TurntableManipulator.h"
 #include "PolyLineRenderer.h"
+#include <Box2D/Box2D.h>
+
+
+struct SimCircle {
+    float radius;
+    b2Body *body;
+};
+
+struct SimSquare {
+    float length;
+    b2Body *body;
+};
 
 class App : public GApp {
 public:
@@ -19,7 +31,14 @@ public:
 	virtual void onUserInput(UserInput *userInput);
 
 protected:
+    
+    b2World *world;
+    
+    Array<SimCircle> circles;
 
+    virtual void addCircle(Vector3 position, float radius);
+    virtual void resetWorld();;
+    
 	virtual void reloadShaders();
 	virtual void createGeometryAndSetArgs(const Box &b, Color3 color, Args &args);
 	virtual void createGeometryAndSetArgs(const Sphere &s, Color3 color, Args &args);
@@ -46,7 +65,7 @@ protected:
 	SketchMode              sketchMode;
 	Array<Vector2>          sketchedPath;  
 
-	Array<Sphere>           spheres;
+	//Array<Sphere>           spheres;
 	Array<Box>              boxes;  
 	Array< PolylineRenderer > backgroundShapes;
 };
