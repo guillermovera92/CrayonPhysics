@@ -12,8 +12,9 @@ struct SimCircle {
     b2Body *body;
 };
 
-struct SimSquare {
-    float length;
+struct SimBox {
+    float width;
+    float height;
     b2Body *body;
 };
 
@@ -35,8 +36,11 @@ protected:
     b2World *world;
     
     Array<SimCircle> circles;
+    Array<SimBox> boxes;
+    
 
     virtual void addCircle(Vector3 position, float radius);
+    virtual void addBox(Vector3 position, float width, float height);
     virtual void resetWorld();;
     
 	virtual void reloadShaders();
@@ -66,7 +70,7 @@ protected:
 	Array<Vector2>          sketchedPath;  
 
 	//Array<Sphere>           spheres;
-	Array<Box>              boxes;  
+	//Array<Box>              boxes;
 	Array< PolylineRenderer > backgroundShapes;
 };
 

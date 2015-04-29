@@ -148,9 +148,13 @@ void App::onUserInput(UserInput *userInput) {
 				if (rad < 100) {
 					minP[2] = -0.2;
 					maxP[2] = 0.2;
+                    Vector3 position = (minP + maxP) / 2;
+                    float width = abs(maxP.x - minP.x);
+                    float height = abs(maxP.y - minP.y);
 					// TODO: add this box to the physics simulation
-					boxes.append(Box(minP, maxP));
-				}
+					//boxes.append(Box(minP, maxP));
+                    addBox(position, width, height);
+                }
 			}
 			else {
 				float rad = (maxP - minP).length() / 2.0;
@@ -190,11 +194,32 @@ void App::addCircle(Vector3 position, float radius) {
     fixtureDef.restitution = 1.0f;
     simCircle.body->CreateFixture(&fixtureDef);
     
-    //simCircle.color = Color3(random.uniform(),random.uniform(),random.uniform());
-    
     circles.append(simCircle);
 }
 
+void App::addBox(Vector3 position, float width, float height){
+    
+    SimBox simBox;
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(position.x, position.y);
+    simBox.body = world->CreateBody(&bodyDef);
+    simBox.width = width;
+    simBox.height = height;
+    
+    b2PolygonShape boxShape;
+    boxShape.SetAsBox(width/2, height/2);
+    
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &boxShape;
+    fixtureDef.density = .2f;
+    fixtureDef.friction = .3f;
+    fixtureDef.restitution = 1.0f;
+    simBox.body->CreateFixture(&fixtureDef);
+    
+    boxes.append(simBox);
+    
+}
 
 void App::resetWorld() {
     delete world;
@@ -261,27 +286,27 @@ void App::onGraphics3D(RenderDevice* rd, Array<shared_ptr<Surface> >& surface3D)
 
 	// TODO: you should change this to draw physics objects instead of stationary objects  
 	
-//	for (int i=0;i<spheres.size();i++) {
-//		createGeometryAndSetArgs(spheres[i], Color3(0.20,0.79,0.20), args);
-//		rd->apply(shader, args);
-//	}
-    
+
     // render circles
     for (int x=0; x<circles.size(); x++) {
         
         b2Vec2 pos2 = circles[x].body->GetPosition();
         float radius = circles[x].radius;
         Vector3 pos3(pos2.x, pos2.y, 0);
-        // Sphere sphere = Sphere(pos3, radius, );
-        // Draw::sphere(Sphere(pos3, circles[x].radius), rd);
-
         createGeometryAndSetArgs(Sphere(pos3, radius), Color3(0.20,0.79,0.20), args);
         rd->apply(shader, args);
     
     }
  
 	for (int i=0;i<boxes.size();i++) {
-		createGeometryAndSetArgs(boxes[i], Color3(0.44,0.52,0.93), args);
+        b2Vec2 pos2 = boxes[i].body->GetPosition();
+        float width = boxes[i].width;
+        float height = boxes[i].height;
+        
+        Vector3 minP = Vector3(pos2.x - (width / 2), pos2.y - (height / 2), -0.2);
+        Vector3 maxP = Vector3(pos2.x + (width / 2), pos2.y + (height / 2), 0.2);
+        
+		createGeometryAndSetArgs(Box(minP, maxP), Color3(0.44,0.52,0.93), args);
 		rd->apply(shader, args);
 	}
 	for (int i=0;i<backgroundShapes.size();i++) {
