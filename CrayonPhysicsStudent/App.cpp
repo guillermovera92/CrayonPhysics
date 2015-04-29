@@ -167,6 +167,7 @@ void App::onUserInput(UserInput *userInput) {
 							previousPoint = sketched3DPath[x];
 						}
 					}
+                    addPolyline(polyline);
 					// TODO: add this background shape to the physics simulation
 					backgroundShapes.append(PolylineRenderer(polyline));
 				}
@@ -218,7 +219,32 @@ void App::addBox(Vector3 position, float width, float height){
     simBox.body->CreateFixture(&fixtureDef);
     
     boxes.append(simBox);
+}
+
+void App::addPolyline(Array<Vector2> verts){
+    int size = verts.size();
+    if (size >=2) {
+        Polyline polyline;
+        b2BodyDef bodyDef;
+        bodyDef.type = b2_staticBody;
     
+        polyline.body = world->CreateBody(&bodyDef);
+        polyline.size = size;
+        b2Vec2 *vs = new b2Vec2[size];
+        for(int i=0;i<size;i++){
+            vs[i].Set(verts[i].x, verts[i].y);
+        }
+        b2ChainShape chainShape;
+        chainShape.CreateChain(vs, size);
+    
+        b2FixtureDef fixtureDef;
+        fixtureDef.shape = &chainShape;
+        fixtureDef.density = .2f;
+        fixtureDef.friction = .3f;
+        fixtureDef.restitution = 1.0f;
+        polyline.body->CreateFixture(&fixtureDef);
+        polylines.append(polyline);
+    }
 }
 
 void App::resetWorld() {

@@ -18,6 +18,12 @@ struct SimBox {
     b2Body *body;
 };
 
+struct Polyline {
+    int size;
+    //Array<Vector2> verts;
+    b2Body *body;
+};
+
 class App : public GApp {
 public:
 
@@ -37,10 +43,12 @@ protected:
     
     Array<SimCircle> circles;
     Array<SimBox> boxes;
+    Array<Polyline> polylines;
     
 
     virtual void addCircle(Vector3 position, float radius);
     virtual void addBox(Vector3 position, float width, float height);
+    virtual void addPolyline(Array<Vector2> verts);
     virtual void resetWorld();;
     
 	virtual void reloadShaders();
