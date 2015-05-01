@@ -1,13 +1,13 @@
 Application Log
-Start: Fri Apr 17 15:42:03 2015
+Start: Thu Apr 30 23:38:51 2015
 
-Initializing System::findDataFile took 0.001830s
+Initializing System::findDataFile took 0.001541s
 WARNING: AudioDevice is not enabled. Set G3DSpecification::audio = true before invoking initGLG3D() to enable audio.
 
 Entering GApp::GApp()
 cwd = /Users/guillermovera/Desktop/comp394/CrayonPhysics/CrayonPhysicsStudent
-System::setAppDataDir("./build/")
-Initializing System::findDataFile took 0.000917s
+System::setAppDataDir("/Users/guillermovera/Desktop/comp394/CrayonPhysics/CrayonPhysicsStudent/build/")
+Initializing System::findDataFile took 0.000585s
 Setting video mode
 Setting initial rendering state.
 Done setting initial state.
@@ -135,7 +135,7 @@ NetworkDevice: Ignored adapter en2 because ip = 0
 NetworkDevice: Ignored adapter p2p0 because ip = 0
 System = { 
     App { 
-        Name = "./build/CrayonPhysicsStudentd"
+        Name = "/Users/guillermovera/Desktop/comp394/CrayonPhysics/CrayonPhysicsStudent/build/CrayonPhysicsStudentd"
         cwd = "/Users/guillermovera/Desktop/comp394/CrayonPhysics/CrayonPhysicsStudent"
     } 
     
@@ -169,8 +169,8 @@ System = {
         Driver = "Unknown;"
         OpenGL version = "4.1 NVIDIA-10.2.7 310.41.25f01;"
         Textures = 16 ;
-        Texture coordinates = 1605803888 ;
-        Texture units = 1605803888 ;
+        Texture coordinates = 1512103536 ;
+        Texture units = 1512103536 ;
         GL_MAX_TEXTURE_SIZE = 16384 ;
         GL_MAX_CUBE_MAP_TEXTURE_SIZE = 16384 ;
         GL_MAX_COLOR_ATTACHMENTS = 8 ;
@@ -254,9 +254,9 @@ System = {
         Adapter0 ={ 
             hostname = ";"
             name = "en0;"
-            ip = "141.140.193.162"; 
+            ip = "192.168.  0.  2"; 
             subnet = "255.255.255.  0"; 
-            broadcast = "141.140.193.255"; 
+            broadcast = "192.168.  0.255"; 
             mac = "b8:e8:56:37:79:8a"; 
         }; 
     }; 
@@ -268,4 +268,31 @@ Entering GApp::loadFont("console-small.fnt")
 Found "console-small.fnt" at "/Users/guillermovera/G3D10/G3D/data/font/console-small.fnt"
 Done GApp::loadFont(...)
 Done GApp::GApp()
+
+
+
+
+
+_____________________________________________________
+
+    ###    Files Used    ###
+
+/Users/guillermovera/Desktop/comp394/CrayonPhysics/CrayonPhysicsStudent/log.txt
+/Users/guillermovera/Desktop/comp394/CrayonPhysics/data/background-frag.pix
+/Users/guillermovera/Desktop/comp394/CrayonPhysics/data/background-vert.vrt
+/Users/guillermovera/Desktop/comp394/CrayonPhysics/data/frag.pix
+/Users/guillermovera/Desktop/comp394/CrayonPhysics/data/menu.jpg
+/Users/guillermovera/Desktop/comp394/CrayonPhysics/data/noise2.jpg
+/Users/guillermovera/Desktop/comp394/CrayonPhysics/data/paper2.jpg
+/Users/guillermovera/Desktop/comp394/CrayonPhysics/data/ramp6.jpg
+/Users/guillermovera/Desktop/comp394/CrayonPhysics/data/vert.vrt
+/Users/guillermovera/G3D10/G3D/data/font/arial.fnt
+/Users/guillermovera/G3D10/G3D/data/font/console-small.fnt
+/Users/guillermovera/G3D10/G3D/data/font/greek.fnt
+/Users/guillermovera/G3D10/G3D/data/font/icon.fnt
+/Users/guillermovera/G3D10/G3D/data/gui/osx-10.7.gtm
+/Users/guillermovera/G3D10/G3D/data/icon/tango.icn
+/Users/guillermovera/G3D10/G3D/data/shader/compatibility.glsl
+/Users/guillermovera/G3D10/G3D/data/shader/unlit.pix
+/Users/guillermovera/G3D10/G3D/data/shader/unlit.vrt
 

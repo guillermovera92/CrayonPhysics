@@ -185,16 +185,16 @@ void App::addCircle(Vector3 position, float radius) {
     bodyDef.position.Set(position.x, position.y);
     simCircle.body = world->CreateBody(&bodyDef);
     simCircle.radius = radius;
-    
+
     b2CircleShape circle;
     circle.m_radius = radius;
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &circle;
     fixtureDef.density = .2f;
     fixtureDef.friction = .3f;
-    fixtureDef.restitution = 1.0f;
+    fixtureDef.restitution = 0.3f;
     simCircle.body->CreateFixture(&fixtureDef);
-    
+
     circles.append(simCircle);
 }
 
@@ -215,7 +215,7 @@ void App::addBox(Vector3 position, float width, float height){
     fixtureDef.shape = &boxShape;
     fixtureDef.density = .2f;
     fixtureDef.friction = .3f;
-    fixtureDef.restitution = 1.0f;
+    fixtureDef.restitution = 0.3f;
     simBox.body->CreateFixture(&fixtureDef);
     
     boxes.append(simBox);
@@ -260,6 +260,9 @@ void App::onSimulation(RealTime rdt, SimTime sdt, SimTime idt) {
 
 
 void App::reloadShaders() {
+	std::cout << VERTEX_SHADER << "\n";
+	std::cout << FRAGMENT_SHADER << "\n";
+
 	shader = Shader::fromFiles(VERTEX_SHADER, FRAGMENT_SHADER);
 	backgroundShader = Shader::fromFiles(BACKGROUND_VERTEX_SHADER, BACKGROUND_FRAGMENT_SHADER);
 }
